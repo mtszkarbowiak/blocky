@@ -1,0 +1,14 @@
+{
+    "name": "AuroraSeeker.Blocky.Shared",
+    "rootNamespace": "AuroraSeeker",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

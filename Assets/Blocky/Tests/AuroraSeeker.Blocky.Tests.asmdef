@@ -8,11 +8,12 @@
         "AuroraSeeker.Blocky.Runtime",
         "Unity.Burst",
         "Unity.Jobs",
-        "Unity.Mathematics"
+        "Unity.Mathematics",
+        "Unity.PerformanceTesting"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll"

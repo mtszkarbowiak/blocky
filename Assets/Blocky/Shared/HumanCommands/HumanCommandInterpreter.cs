@@ -12,12 +12,12 @@ namespace AuroraSeeker.Blocky.Shared.HumanCommands
     {
         private const char Splitter = ' ';
         private readonly Dictionary<string, IHumanCommand> _aliasDictionary;
-        private readonly Regex _commandRegex;
+        private readonly Regex _commandAliasRegex;
 
         public HumanCommandInterpreter(int capacity = 1024)
         {
             _aliasDictionary = new Dictionary<string, IHumanCommand>(capacity);
-            _commandRegex = new Regex("[a-zA-z]");
+            _commandAliasRegex = new Regex("[a-zA-z]");
         }
         
         public void RegisterCommand(IHumanCommand humanCommand)
@@ -30,7 +30,7 @@ namespace AuroraSeeker.Blocky.Shared.HumanCommands
                         $"{nameof(HumanCommandInterpreter)} already contains definition for {humanCommand}.");
                 }
                 
-                if (!_commandRegex.IsMatch(commandAlias))
+                if (!_commandAliasRegex.IsMatch(commandAlias))
                 {
                     throw new InvalidOperationException(
                         $"{nameof(HumanCommandInterpreter)} already contains definition for {humanCommand}.");

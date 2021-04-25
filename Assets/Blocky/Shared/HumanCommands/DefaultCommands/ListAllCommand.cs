@@ -12,8 +12,8 @@ namespace AuroraSeeker.Blocky.Shared.HumanCommands.DefaultCommands
             _logger = logger;
         }
 
-        private HumanCommandInterpreter _humanCommandInterpreter;
-        private ILogger _logger;
+        private readonly HumanCommandInterpreter _humanCommandInterpreter;
+        private readonly ILogger _logger;
         
         public IEnumerable<string> CommandAliases => new[] {"all"};
 

@@ -11,13 +11,13 @@ namespace AuroraSeeker.Blocky.Shared.HumanCommands.DefaultCommands
             _logger = logger;
         }
 
-        private HumanCommandInterpreter _humanCommandInterpreter;
-        private ILogger _logger;
+        private readonly HumanCommandInterpreter _humanCommandInterpreter;
+        private readonly ILogger _logger;
         
         public IEnumerable<string> CommandAliases => new[] {"man", "manual","help"};
 
         public string Manual => "Lists all commands.";
-        
+
         public void Interpret(string[] args)
         {
             var humanCommands = _humanCommandInterpreter.GetAliasDictionary();

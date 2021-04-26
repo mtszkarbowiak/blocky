@@ -1,7 +1,9 @@
 ﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AuroraSeeker.Blocky.Shared.Serialization.Exceptions;
 
 namespace AuroraSeeker.Blocky.Shared.World
 {
@@ -19,7 +21,7 @@ namespace AuroraSeeker.Blocky.Shared.World
         public void Register(ushort id, Func<IBlockData> factoryCallback)
         {
             if (_pools.ContainsKey(id) || _factoryCallbacks.ContainsKey(id)) 
-                throw new ArgumentException($"This ID ({id}) is already registered.");
+                throw new ElementAlreadyRegisteredException($"This ID ({id}) is already registered.");
 
             var queue = new Queue<IBlockData>();
             

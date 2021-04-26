@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using AuroraSeeker.Blocky.Shared.Serialization;
 using AuroraSeeker.Blocky.Shared.Serialization.Unsafe;
 using static AuroraSeeker.Blocky.Shared.ChunkAddressing;
@@ -19,49 +20,94 @@ namespace AuroraSeeker.Blocky.Shared.World
             _blockData = new Dictionary<ushort, IBlockData>(DefaultChunkDataCapacity);
         }
 
+        
         public void Serialize(IByteWriter buffer)
         {
             for (var i = 0; i < ChunkSize3D; i++)
                 buffer.WriteUShort(_blockIds[i]);
-            
+
+            buffer.WriteUShort((ushort) _blockData.Count);
+
+            foreach (var pair in _blockData)
+            {
+                var index = pair.Key;
+                var data = pair.Value;
+                
+                buffer.WriteUShort(index);
+                data.Serialize(buffer);
+            }
         }
 
-        public void Deserialize(IByteReader buffer)
+        public void Deserialize(IByteReader buffer, IBlockDataPoolingRegistry blockDataPoolingRegistry)
         {
+            ClearChunk(blockDataPoolingRegistry);
+            
             for (var i = 0; i < ChunkSize3D; i++)
                 _blockIds[i] = buffer.ReadUshort();
+
+            int count = buffer.ReadUshort();
+
+            for (var i = 0; i < count; i++)
+            {
+                var addressIndex = buffer.ReadUshort();
+                var registryIndex = _blockIds[addressIndex];
+                
+                var data = blockDataPoolingRegistry.GetById(registryIndex);
+                data.Deserialize(buffer);
+                
+                _blockData.Add(addressIndex,data);
+            }
         }
 
-        
-        public void SetBlockID(ushort location, ushort block)
+        public void ClearChunk(IBlockDataPoolingRegistry blockDataPoolingRegistry, bool overrideIds = false)
         {
-            _blockIds[location] = block;
+            if (overrideIds)
+            {
+                for (int i = 0; i < ChunkSize3D; i++)
+                    _blockIds[i] = 0;
+            }
+            
+            foreach (var pair in _blockData)
+            {
+                var addressIndex = pair.Key;
+                var data = pair.Value;
+                var registryIndex = _blockIds[addressIndex];
+                
+                blockDataPoolingRegistry.Return(registryIndex, data);
+            }
         }
+
 
         public ushort GetBlockID(ushort location)
         {
             return _blockIds[location];
         }
         
-        public void SetBlockData(ushort location, IBlockData data)
+        public IBlockData? GetBlockData(ushort location)
         {
-            if (_blockData.ContainsKey(location))
-            {
-                if (data == null)
-                    _blockData.Remove(location);
-                else
-                    _blockData[location] = data;
-                
-                return;
-            }
-            
-            if(data != null)
-                _blockData.Add(location, data);
+            return _blockData.TryGetValue(location, out var result) ? result : null;
         }
 
-        public IBlockData GetBlockData(ushort location)
+        public IBlockData? SetBlock(ushort location, ushort blockId, IBlockDataPoolingRegistry dataPoolingRegistry)
         {
-            return _blockData[location];
+            var previousID = _blockIds[location];
+            var isKeyPresent = _blockData.TryGetValue(location, out var value);
+            
+            if(isKeyPresent) dataPoolingRegistry.Return(previousID, value);
+
+            _blockIds[location] = blockId;
+            
+            var newData = dataPoolingRegistry.GetById(blockId);
+
+            if (newData == null) 
+                return null;
+            
+            if (isKeyPresent)
+                _blockData[location] = newData;
+            else
+                _blockData.Add(location, newData);
+
+            return newData;
         }
     }
 }

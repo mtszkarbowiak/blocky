@@ -10,12 +10,17 @@ namespace AuroraSeeker.Blocky.Tests.World
         [Test]
         public void Serialization_WriteAndReadChunk()
         {
-            const ushort location = 58, value = 58;
+            const ushort location = 7, value = 58;
+            const byte b = 0xFE;
+            
+            var blockDataPoolingRegistry = new BlockDataPoolRegistry();
+            blockDataPoolingRegistry.Register(value, () => new MockBlockData());
             
             var chunkState1 = new ChunkState();
             var chunkState2 = new ChunkState();
 
-            chunkState1.SetBlockID(location, value);
+            var blockData = chunkState1.SetBlock(location, value, blockDataPoolingRegistry) as MockBlockData;
+            blockData.theByte = b;
             
             var buffer = new ResizableByteBuffer();
 
@@ -23,10 +28,29 @@ namespace AuroraSeeker.Blocky.Tests.World
             chunkState1.Serialize(buffer);
             
             buffer.RestartForReading();
-            chunkState2.Deserialize(buffer);
+            chunkState2.Deserialize(buffer, blockDataPoolingRegistry);
+            
+            var resultId = chunkState2.GetBlockID(location);
+            var resultData = (MockBlockData) chunkState2.GetBlockData(location);
+            var resultDataByte = resultData.theByte;
+            
+            Assert.AreEqual(value, resultId);
+            Assert.AreEqual(b, resultDataByte);
+        }
 
-            var result = chunkState2.GetBlockID(location);
-            Assert.AreEqual(value, result);
+        class MockBlockData : IBlockData
+        {
+            public byte theByte;
+            
+            public void Serialize(IByteWriter writer)
+            {
+                writer.WriteNext(theByte);
+            }
+
+            public void Deserialize(IByteReader reader)
+            {
+                theByte = reader.ReadNext();
+            }
         }
     }
 }

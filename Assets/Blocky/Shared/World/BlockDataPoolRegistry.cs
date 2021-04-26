@@ -16,14 +16,14 @@ namespace AuroraSeeker.Blocky.Shared.World
             _factoryCallbacks = new Dictionary<ushort, Func<IBlockData>>(capacity);
         }
 
-        public void Register(ushort id, Func<IBlockData> facoryCallback)
+        public void Register(ushort id, Func<IBlockData> factoryCallback)
         {
             if (_pools.ContainsKey(id) || _factoryCallbacks.ContainsKey(id)) 
                 throw new ArgumentException($"This ID ({id}) is already registered.");
 
             var queue = new Queue<IBlockData>();
             
-            _factoryCallbacks.Add(id, facoryCallback);
+            _factoryCallbacks.Add(id, factoryCallback);
             _pools.Add(id, queue);
         }
 

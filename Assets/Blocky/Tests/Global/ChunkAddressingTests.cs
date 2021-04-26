@@ -2,9 +2,9 @@
 using UnityEngine;
 using static AuroraSeeker.Blocky.Shared.ChunkAddressing;
 
-namespace AuroraSeeker.Blocky.Tests
+namespace AuroraSeeker.Blocky.Tests.Global
 {
-    public class ChunkAddressing
+    public class ChunkAddressingTests
     {
         [Test]
         public void UnpackAndPack()

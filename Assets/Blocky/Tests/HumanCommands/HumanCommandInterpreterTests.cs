@@ -2,9 +2,9 @@
 using NUnit.Framework;
 using TestedType = AuroraSeeker.Blocky.Shared.HumanCommands.HumanCommandInterpreter;
 
-namespace AuroraSeeker.Blocky.Tests
+namespace AuroraSeeker.Blocky.Tests.HumanCommands
 {
-    public class HumanCommandInterpreter
+    public class HumanCommandInterpreterTests
     {
         [Test]
         public void RegisterAndInvoke()

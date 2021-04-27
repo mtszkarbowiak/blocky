@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using AuroraSeeker.Blocky.Shared.HumanCommands.DefaultCommands;
-using AuroraSeeker.Blocky.Shared.Logging;
 
 namespace AuroraSeeker.Blocky.Shared.HumanCommands
 {

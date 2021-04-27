@@ -2,46 +2,36 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using AuroraSeeker.Blocky.Shared.Collections.Pooling;
 using AuroraSeeker.Blocky.Shared.Serialization.Exceptions;
 
 namespace AuroraSeeker.Blocky.Shared.World
 {
     public class BlockDataPoolRegistry : IBlockDataPoolingRegistry
     {
-        private readonly Dictionary<ushort, Queue<IBlockData>> _pools;
-        private readonly Dictionary<ushort, Func<IBlockData>> _factoryCallbacks;
+        private readonly Dictionary<ushort, QueuePool<IBlockData>> _pools;
 
         public BlockDataPoolRegistry(int capacity = 2048)
         {
-            _pools = new Dictionary<ushort, Queue<IBlockData>>(capacity);
-            _factoryCallbacks = new Dictionary<ushort, Func<IBlockData>>(capacity);
+            _pools = new Dictionary<ushort, QueuePool<IBlockData>>(capacity);
         }
 
         public void Register(ushort id, Func<IBlockData> factoryCallback)
         {
-            if (_pools.ContainsKey(id) || _factoryCallbacks.ContainsKey(id)) 
+            if (_pools.ContainsKey(id)) 
                 throw new ElementAlreadyRegisteredException($"This ID ({id}) is already registered.");
 
-            var queue = new Queue<IBlockData>();
-            
-            _factoryCallbacks.Add(id, factoryCallback);
-            _pools.Add(id, queue);
+            _pools.Add(id, new QueuePool<IBlockData>(factoryCallback));
         }
 
         public IBlockData? GetById(ushort id)
         {
-            if (_pools.TryGetValue(id, out var pool))
-            {
-                return pool.Any() ? pool.Dequeue() : _factoryCallbacks[id]();
-            }
-
-            return null;
+            return _pools.TryGetValue(id, out var pool) ? pool.Get() : null;
         }
 
         public void Return(ushort id, IBlockData blockData)
         {
-            _pools[id].Enqueue(blockData);
+            _pools[id].Return(blockData);
         }
     }
 }

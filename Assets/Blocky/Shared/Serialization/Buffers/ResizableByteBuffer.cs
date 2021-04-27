@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AuroraSeeker.Blocky.Shared.Serialization.Exceptions;
 
 namespace AuroraSeeker.Blocky.Shared.Serialization.Buffers

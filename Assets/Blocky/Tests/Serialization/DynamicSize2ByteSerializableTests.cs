@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AuroraSeeker.Blocky.Shared.Serialization.Buffers;
 using NUnit.Framework;
 using TestedType = AuroraSeeker.Blocky.Shared.Serialization.DynamicSize2ByteSerializable;

@@ -1,9 +1,9 @@
 ﻿using AuroraSeeker.Blocky.Shared.Serialization;
 using AuroraSeeker.Blocky.Shared.Serialization.Unsafe;
 
-namespace AuroraSeeker.Blocky.Shared.World.BlockData
+namespace AuroraSeeker.Blocky.Shared.World.BlockData.Concrete
 {
-    public class LifeTimeBlockData : IByteSerializable
+    public class LifeTimeData : IBlockData
     {
         private float _lifeTime;
 

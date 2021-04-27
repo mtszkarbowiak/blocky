@@ -24,16 +24,16 @@ namespace AuroraSeeker.Blocky.Shared.World
         public void Serialize(IByteWriter buffer)
         {
             for (var i = 0; i < ChunkSize3D; i++)
-                buffer.WriteUShort(_blockIds[i]);
+                buffer.WriteUInt16(_blockIds[i]);
 
-            buffer.WriteUShort((ushort) _blockData.Count);
+            buffer.WriteUInt16((ushort) _blockData.Count);
 
             foreach (var pair in _blockData)
             {
                 var index = pair.Key;
                 var data = pair.Value;
                 
-                buffer.WriteUShort(index);
+                buffer.WriteUInt16(index);
                 data.Serialize(buffer);
             }
         }
@@ -43,13 +43,13 @@ namespace AuroraSeeker.Blocky.Shared.World
             ClearChunk(blockDataPoolingRegistry);
             
             for (var i = 0; i < ChunkSize3D; i++)
-                _blockIds[i] = buffer.ReadUshort();
+                _blockIds[i] = buffer.ReadUInt16();
 
-            int count = buffer.ReadUshort();
+            int count = buffer.ReadUInt16();
 
             for (var i = 0; i < count; i++)
             {
-                var addressIndex = buffer.ReadUshort();
+                var addressIndex = buffer.ReadUInt16();
                 var registryIndex = _blockIds[addressIndex];
                 
                 var data = blockDataPoolingRegistry.GetById(registryIndex);

@@ -1,5 +1,7 @@
 # Blocky
 
+*This Project is **Discontinued**. I keep it for tracking the history.*
+
 ## Description
 
 Advanced library for voxel-based games for Unity 3D engine, with a small game built with it.
